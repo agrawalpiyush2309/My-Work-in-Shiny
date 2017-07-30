@@ -1,0 +1,52 @@
+---
+title: "India_Map"
+author: "Piyush"
+date: "March 29, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(rgdal)
+library(ggplot2)
+library(rgeos)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## A visual Analysis of India
+
+# Reading spatial file into r
+```{r}
+india0<-readOGR("C:\\Users\\Admin\\Desktop\\R Practice\\ggplot2\\IND_adm_shp",layer="IND_adm0")
+india1<-readOGR("C:\\Users\\Admin\\Desktop\\R Practice\\ggplot2\\IND_adm_shp",layer="IND_adm1")
+india2<-readOGR("C:\\Users\\Admin\\Desktop\\R Practice\\ggplot2\\IND_adm_shp",layer="IND_adm2")
+india3<-readOGR("C:\\Users\\Admin\\Desktop\\R Practice\\ggplot2\\IND_adm_shp",layer="IND_adm3")
+```
+This is for test
+```{r}
+india0@data$id <- rownames(india0@data)
+india1@data$id <- rownames(india1@data)
+india2@data$id <- rownames(india2@data)
+india3@data$id <- rownames(india3@data)
+```
+# create a data.frame from our spatial object
+```{r}
+a0 <- fortify(india0, region = "id")
+a1 <- fortify(india1, region = "id")
+a2 <- fortify(india2, region = "id")
+a3 <- fortify(india3, region = "id")
+```
+# merge the "fortified" data with the data from our spatial object
+```{r}
+indiaA <- merge(a0, india0@data, by = "id")
+indiaB <- merge(a1, india1@data, by = "id")
+indiaC <- merge(a2, india2@data, by = "id")
+indiaD <- merge(a3, india3@data, by = "id")
+```
+Checking contents of all 4 files
+```{r}
+head(indiaA)
+ggplot(indiaA,aes(long,lat))+geom_polygon(aes(group=group))
+ ggplot(indiaB,aes(long,lat))+geom_polygon(aes(group=group,fill=NAME_1,color=TYPE_1))+geom_polygon(data=mp,fill="goldenrod1")+coord_equal()
+ 
+mumbai <- get_map(location="Mumbai", zoom=10, maptype='terrain', source='google', color='color')
+```
